@@ -1,0 +1,13 @@
+name = "Kilter"
+uuid = "72428981-e032-4491-806c-5313f6fd9e5c"
+authors = ["Frederik Schnack <frederik.schnack@ipp.mpg.de> and contributors"]
+version = "1.0.0-DEV"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
