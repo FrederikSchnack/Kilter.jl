@@ -3,6 +3,13 @@ uuid = "72428981-e032-4491-806c-5313f6fd9e5c"
 authors = ["Frederik Schnack <frederik.schnack@ipp.mpg.de> and contributors"]
 version = "1.0.0-DEV"
 
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+SQLite = "0aa819cd-b072-5ff4-a722-6bc24af294d9"
+Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+
 [compat]
 julia = "1"
 
