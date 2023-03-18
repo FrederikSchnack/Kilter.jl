@@ -26,8 +26,8 @@ function Kdata_original()
             for k = 2:3
         ],
         plot_bgcolor= "#2E2E2E",
-        width = KB.sizes[1], 
-        height = KB.sizes[2],
+       # width = KB.sizes[1], 
+       # height = KB.sizes[2],
         margin=attr(l=0,r=0,t=0,b=0),
     )
 
@@ -66,8 +66,8 @@ function Kdata_home()
         for k = 2:3
     ],
     plot_bgcolor= "#2E2E2E",
-    width = KB.sizes[1], 
-    height = KB.sizes[2],
+   # width = KB.sizes[1], 
+   # height = KB.sizes[2],
     margin=attr(l=0,r=0,t=0,b=0),
     )
 
@@ -84,21 +84,6 @@ function Kdata_home()
     return Kdata(KB, layout, climbs)
 end
 
-function get_datatable(data::DataFrame)
-
-    translate = Dict{String, String}("name" => "climb name", 
-    "difficulty_average" => "average grade",
-    "angle" => "angle", "frames" => "frames",
-    "setter_username" => "setter", "fa_username" => "first ascensionist",
-    "ascensionist_count" => "ascensionists", "quality_average" => "average quality", 
-    "grade" => "grade")
-
-    #cols = getindex.(Ref(translate), names(data))
-    cols = names(data)
-    opt = DataTableOptions(columns = Column(cols))
-
-    return DataTable(data, opt)
-  end
 
   ### PLOTTING TOOLS ###
 
@@ -116,4 +101,23 @@ function get_datatable(data::DataFrame)
         marker = Dict(:color => "#" .* col, :size => 20, :opacity => 0.6)
       )
   
+  end
+
+
+  function plot_all_climbs(KB::Kilter.Board, color_ind::Vector{Int})
+    pos = collect(values(KB.frame_to_pos))
+    x_p, y_p = Kilter.unzip(pos)
+
+    col = ["#e0e0e0" for _ in eachindex(pos)]
+    if !isempty(color_ind)
+        col[color_ind] .= "#ba1111"
+    end
+
+    return PlotData(
+        x = x_p,
+        y = y_p,
+        mode = "markers",
+        plot = StipplePlotly.Charts.PLOT_TYPE_SCATTER,
+        marker = Dict(:color => col, :size => 20, :opacity => 0.6)
+      )
   end

@@ -19,6 +19,7 @@ module Kilter
     const path_to_data = Ref{String}()
     const db = Ref{SQLite.DB}()
 
+    
     const grades = Dict{Int, String}(
         10 => "4a/V0",
         11 => "4b/V0",
@@ -45,7 +46,7 @@ module Kilter
         32 => "8c/V15",
         33 => "8c+/V16")
 
-    get_grade(x::Float64) = grades[round(Int, x)]
+    get_grade(x::Real) = grades[round(Int, x)]
 
     include("boards.jl")
     include("queries.jl")
