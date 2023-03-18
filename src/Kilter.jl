@@ -1,12 +1,22 @@
 module Kilter
 
     using SQLite, Tables, DataFrames
-    using Plots, Images
+    #using Plots, Images
+    using Images, PlotlyJS
 
     function __init__()
-        db[] = SQLite.DB("./data/db.sqlite3")
+        if basename(pwd()) == "Kilter.jl"
+            path_to_data[] = "./data/"
+        elseif basename(pwd()) == "app"
+            path_to_data[] = "../data/"
+        else
+            error("Path not correct!")
+        end
+
+        db[] = SQLite.DB(path_to_data.x*"db.sqlite3")
     end
 
+    const path_to_data = Ref{String}()
     const db = Ref{SQLite.DB}()
 
     const grades = Dict{Int, String}(
@@ -32,7 +42,8 @@ module Kilter
         29 => "8a+/V12",
         30 => "8b/V13",
         31 => "8b+/V14",
-        32 => "8c/V15")
+        32 => "8c/V15",
+        33 => "8c+/V16")
 
     get_grade(x::Float64) = grades[round(Int, x)]
 

@@ -1,0 +1,28 @@
+<header class="st-header q-pa-sm">
+    <div class="row">
+        <div class="col">
+            <h1>Kilter.jl</h1>
+            <p>A interactive web dashboard for <a href="https://github.com/FrederikSchnack/Kilter.jl">Kilter.jl</a>.
+            </p>
+        </div>
+        <div class="col"></div>
+        <div class="col"></div>
+        <q-toggle v-model="board" false-value="Homewall" true-value="Original" id="ifeiu" > Kilterboard {{board}} </q-toggle>
+        <div class="col"></div>
+    </div>
+</header>
+<div class="row">
+    <div class="col col-3">
+        <h3 id="ibc96">Board angle</h3>
+        <q-slider></q-slider>
+        <h3 id="iuk4e">Climb difficulty</h3>
+        <q-range></q-range>
+    </div>
+    <div class="col">
+        <plotly id="icqhj" :data="plot_data" :layout="layout"></plotly>
+    </div>
+    <div class="col col-3">
+        <q-table :columns="climbs.columns_climbs" :data="climbs.data_climbs" row-key="Name" :selection="&quot;single&quot;" :selected.sync="climbs_selection" >   
+             </q-table>
+    </div>
+</div>
