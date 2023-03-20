@@ -13,6 +13,7 @@ In the process, we aim to implement some advanced filtering of problems.
 
 Ideally these features will be provided in some interactive web interface.
 
+
 ## Example
 ```jl
 using Kilter
@@ -25,6 +26,11 @@ plot_heatmap(30, "homewall")
 Original 45°         | Homewall 30°
 :-------------------------:|:-------------------------:
 ![](https://user-images.githubusercontent.com/22898700/225465223-671b96b3-c97f-4679-80c3-e4b55cf755ac.png)  |  ![](https://user-images.githubusercontent.com/22898700/225465244-58322dfb-b689-440a-b0c5-dcfc8b8de878.png)
+
+## Running in the Browser locally using Genie.jl
+```
+julia -e "cd(\"app/\"); using Pkg; Pkg.activate(\".\"); using GenieFramework; Genie.loadapp(); up(async=false);"
+```
 
 ### Acknowledgements
 There is a similar ![project](https://github.com/Declan-Stockdale-Garbutt/KilterBoard_climb_generator) written in Python, that I have not too much looked into. All data used is publicly available in the Kilterboard app by Aurora Climbing. 

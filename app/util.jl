@@ -11,6 +11,7 @@ function Kdata_original()
     layout = PlotlyBase.Layout(
         xaxis = attr(visible=false, showgrid=false, range=(0,KB.sizes[1])),
         yaxis = attr(visible=false, showgrid=false, scaleanchor="x", range=(KB.sizes[2], 0)),
+
         images=[
             attr(
                 x=0,
@@ -28,7 +29,7 @@ function Kdata_original()
         plot_bgcolor= "#2E2E2E",
        # width = KB.sizes[1], 
        # height = KB.sizes[2],
-       # autosize=true,
+        autosize=true,
         margin=attr(l=0,r=0,t=0,b=0),
     )
 
@@ -70,7 +71,7 @@ function Kdata_home()
     #width = KB.sizes[1], 
     #height = KB.sizes[2],
     #height = 800,
-    #autosize=true,
+    autosize=true,
     margin=attr(l=0,r=0,t=0,b=0),
     )
 
@@ -101,7 +102,7 @@ end
         y = y_p,
         mode = "markers",
         plot = StipplePlotly.Charts.PLOT_TYPE_SCATTER,
-        marker = Dict(:color => "#" .* col, :size => 20, :opacity => 0.6)
+        marker = Dict(:color => "#" .* col, :size => 20, :opacity => 0.6),
       )
   
   end

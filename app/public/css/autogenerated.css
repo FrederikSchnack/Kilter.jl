@@ -1,3 +1,12 @@
 #ifeiu{background-color:white;}
 #i9m5a{color:white;}
 #i2rgv{background-color:#2e2e2e;}
+
+.main_plot{
+    height: 800px;
+    width: 100%;
+}
+
+.side_plot{
+    height: 555px;
+}

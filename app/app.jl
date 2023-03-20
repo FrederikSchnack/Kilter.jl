@@ -21,7 +21,7 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
 @handlers begin
   
   @in board = "Original"
-  @in board_angle = 45
+  @in board_angle::Union{Vector{Dict}, Dict}=Dict("max" => 50, "min" => 40)
   @in grade::Union{Vector{Dict}, Dict}=Dict("max" => 33, "min" => 10)
   @in climbs_selection = []
   @in side_sel_holds = Vector{Int}()
@@ -30,6 +30,8 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
 
   @out plot_data = PlotData()
   @out layout = PlotlyBase.Layout()
+  @out side_layout = PlotlyBase.Layout()
+
   @out climbs = DataTable()
   @out grade_label = Dict()
 
@@ -42,13 +44,22 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
     @show grade 
 
     grade_label = Dict("min" => Kilter.get_grade(grade["min"]), "max" => Kilter.get_grade(grade["max"]))
-    
+    sel_holds = collect(keys(kdata[board].KB.frame_to_pos))[side_sel_holds]
+
     climbs_ = kdata[board].climbs
-    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+    climbs = DataTable(climbs_[(board_angle["min"] .<= climbs_.Angle .<= board_angle["max"])  .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]) .* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
 
     layout = kdata[board].layout
+
+    side_layout = kdata[board].layout
     side_plot_data = plot_all_climbs(kdata[board].KB, side_sel_holds)
 
+    if !isempty(climbs_selection)
+      name = climbs_selection[]["Name"]
+      climbs_ = kdata[board].climbs
+      frames = climbs_[climbs_.Name .== name, :].frames[1]
+      plot_data = frame_to_plot(frames, kdata[board].KB)
+    end
   end
 
   @onchange side_plot_data_click begin
@@ -65,8 +76,11 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
 
       sel_holds = collect(keys(kdata[board].KB.frame_to_pos))[side_sel_holds]
       side_plot_data = plot_all_climbs(kdata[board].KB, side_sel_holds)
+
+      plot_data = PlotData()
+
       climbs_ = kdata[board].climbs
-      climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]) .* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+      climbs = DataTable(climbs_[(board_angle["min"] .<= climbs_.Angle .<= board_angle["max"])  .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]) .* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
     end
 
   end
@@ -79,8 +93,9 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
     side_plot_data = plot_all_climbs(kdata[board].KB, side_sel_holds)
     plot_data = PlotData()
     layout = kdata[board].layout
+    side_layout = kdata[board].layout
     climbs_ = kdata[board].climbs
-    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+    climbs = DataTable(climbs_[(board_angle["min"] .<= climbs_.Angle .<= board_angle["max"])  .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]) .* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
   end
 
   @onchange board_angle begin
@@ -89,7 +104,7 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
     plot_data = PlotData()
     climbs_ = kdata[board].climbs
     sel_holds = collect(keys(kdata[board].KB.frame_to_pos))[side_sel_holds]
-    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]).* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+    climbs = DataTable(climbs_[(board_angle["min"] .<= climbs_.Angle .<= board_angle["max"]) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]) .* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
   end
 
   @onchange grade begin
@@ -99,7 +114,7 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
     plot_data = PlotData()
     climbs_ = kdata[board].climbs
     sel_holds = collect(keys(kdata[board].KB.frame_to_pos))[side_sel_holds]
-    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]).* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+    climbs = DataTable(climbs_[(board_angle["min"] .<= climbs_.Angle .<= board_angle["max"])  .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]) .* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
   end
 
   @onchange climbs_selection  begin
