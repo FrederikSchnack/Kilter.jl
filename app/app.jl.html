@@ -11,24 +11,23 @@
         <div class="col"></div>
     </div>
 </header>
+
 <div id="i2rgv" class="row">
 
-    <div class="col-4">
+    <div class="col col-5">
         <h3 id="i9m5a">Board angle </h3>
         <q-slider v-model="board_angle" :min="0" :max="70" :step="5" markers="" label="" label-always="" dark=""></q-slider>
-
+        <h3 id="i9m5a">Climb difficulty </h3>
         <q-range v-model="grade" :min="10" :max="33" :step="1" markers="" label="" label-always="" :left-label-value="grade_label.min" :right-label-value="grade_label.max" dark=""></q-range>
         <h3 id="i9m5a">Selection of holds </h3>
         <plotly :data="side_plot_data" :layout="layout" class="side_plot sync_side_plot_data"></plotly>
     </div>
 
-    <div class="col-8">
+    <div class="col ">
         <plotly :data="plot_data" :layout="layout" class="main_plot"> </plotly>
     </div>
 
 </div>
 
-<div id="i2rgv" class="row">
     <q-table :columns="climbs.columns_climbs" :data="climbs.data_climbs" row-key="Name" :selection="&quot;single&quot;" :selected.sync="climbs_selection" class="data_table">
     </q-table>
-</div>

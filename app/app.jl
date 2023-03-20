@@ -5,8 +5,10 @@ using PlotlyBase, DataFrames
 using GenieFramework
 @genietools
 
-include("../src/Kilter.jl")
-using .Kilter
+#make sure to:
+#using Pkg
+#Pkg.add(path="../")
+using Kilter
 
 include("util.jl")
 
@@ -14,9 +16,6 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
 
 
 @mounted watchplots()
-
-
-
 
 
 @handlers begin
@@ -89,7 +88,8 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
 
     plot_data = PlotData()
     climbs_ = kdata[board].climbs
-    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+    sel_holds = collect(keys(kdata[board].KB.frame_to_pos))[side_sel_holds]
+    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]).* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
   end
 
   @onchange grade begin
@@ -98,7 +98,8 @@ const kdata = Dict{String, Kdata}("Original" => Kdata_original(), "Homewall" => 
     grade_label = Dict("min" => Kilter.get_grade(grade["min"]), "max" => Kilter.get_grade(grade["max"]))
     plot_data = PlotData()
     climbs_ = kdata[board].climbs
-    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]), ["Name", "Grade", "Setter", "FA", "#sends"]])
+    sel_holds = collect(keys(kdata[board].KB.frame_to_pos))[side_sel_holds]
+    climbs = DataTable(climbs_[(climbs_.Angle .== board_angle) .* (grade["min"] .<= climbs_.difficulty_average .<= grade["max"]).* ( [all(contains.(s, string.(sel_holds))) for s in climbs_.frames]), ["Name", "Grade", "Setter", "FA", "#sends"]])
   end
 
   @onchange climbs_selection  begin

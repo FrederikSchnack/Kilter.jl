@@ -28,6 +28,7 @@ function Kdata_original()
         plot_bgcolor= "#2E2E2E",
        # width = KB.sizes[1], 
        # height = KB.sizes[2],
+       # autosize=true,
         margin=attr(l=0,r=0,t=0,b=0),
     )
 
@@ -66,8 +67,10 @@ function Kdata_home()
         for k = 2:3
     ],
     plot_bgcolor= "#2E2E2E",
-   # width = KB.sizes[1], 
-   # height = KB.sizes[2],
+    #width = KB.sizes[1], 
+    #height = KB.sizes[2],
+    #height = 800,
+    #autosize=true,
     margin=attr(l=0,r=0,t=0,b=0),
     )
 
