@@ -29,7 +29,7 @@ function heatmap(KB::Board, board_angle::Int, grade::String="All")
     yp = y2p - y1p
     scale = xs/xp
 
-    plt = plot(background, legend=false, axis=false, grid=false, background=:transparent, size=(xs, ys))
+    plt = plot(background, legend=false, axis=false, grid=false, background="#2E2E2E", size=(xs, ys))
 
     for p in KB.image_links
         f = load(p)

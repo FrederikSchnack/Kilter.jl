@@ -41,10 +41,10 @@ function get_image_files(product_size_id::Int)
     ll = SQLite.DBInterface.execute(db.x, """SELECT image_filename FROM product_sizes WHERE id=$product_size_id""")
     dll = DataFrame(ll) 
     
-    return "data/".* vcat(dll.image_filename, dl.image_filename)
+    return path_to_data.x .* vcat(dll.image_filename, dl.image_filename)
 end
 
-function get_all_climbs(KB::Board)
+function get_all_established_climbs(KB::Board)
     # * with some restrictions
    
     restr = """ SELECT name, frames, setter_username, fa_username, climb_stats.angle,  difficulty_average, ascensionist_count, quality_average
@@ -52,6 +52,20 @@ function get_all_climbs(KB::Board)
     INNER JOIN climb_stats
     ON climbs.uuid = climb_stats.climb_uuid
     WHERE is_listed = 1 and is_draft = 0 and frames_count = 1 and layout_id = $(KB.layout_id) and edge_bottom >= $(KB.edge_bottom_top[1]) and edge_top <= $(KB.edge_bottom_top[2]) and edge_left >= $(KB.edge_left_right[1]) and edge_right <= $(KB.edge_left_right[2])  and ascensionist_count >= 1 """
+
+    d = SQLite.DBInterface.execute(db.x, restr)
+
+    return DataFrame(d)
+end
+
+function get_all_climbs(KB::Board)
+    # * with some restrictions
+   
+    restr = """ SELECT name, difficulty_average, climb_stats.angle, frames, setter_username, fa_username, ascensionist_count, quality_average
+    FROM climbs
+    INNER JOIN climb_stats
+    ON climbs.uuid = climb_stats.climb_uuid
+    WHERE is_listed = 1 and is_draft = 0 and frames_count = 1 and layout_id = $(KB.layout_id) and edge_bottom >= $(KB.edge_bottom_top[1]) and edge_top <= $(KB.edge_bottom_top[2]) and edge_left >= $(KB.edge_left_right[1]) and edge_right <= $(KB.edge_left_right[2]) """
 
     d = SQLite.DBInterface.execute(db.x, restr)
 
@@ -71,7 +85,7 @@ end
 
 
 
-# c = SQLite.DBInterface.execute(db, """SELECT * FROM climbs WHERE climbs.setter_username ="JohannesFinnstein" """)
+# c = SQLite.DBInterface.execute(db.x, """SELECT * FROM climbs WHERE climbs.setter_username ="JohannesFinnstein" """)
 # dc = DataFrame(c)
 
 # h = SQLite.DBInterface.execute(db, """SELECT * FROM placements WHERE layout_id=1 AND (set_id=1 OR set_id=20)""")
