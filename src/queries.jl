@@ -34,6 +34,19 @@ function leds_to_color(product_id::Int)
     return led_to_color
 end
 
+function leds_to_color()
+    h = SQLite.DBInterface.execute(db.x, """SELECT id, screen_color FROM placement_roles""")
+    dh = DataFrame(h)
+
+    led_to_color = Dict{Int, String}()
+    for k in eachrow(dh)
+        led_to_color[k.id] = k.screen_color
+    end
+
+    return led_to_color
+end
+
+
 function get_image_files(product_size_id::Int)
     l = SQLite.DBInterface.execute(db.x, """SELECT image_filename FROM product_sizes_layouts_sets WHERE product_size_id=$product_size_id""")
     dl = DataFrame(l)

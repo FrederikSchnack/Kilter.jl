@@ -1,12 +1,17 @@
 #ifeiu{background-color:white;}
 #i9m5a{color:white;}
 #i2rgv{background-color:#2e2e2e;}
-
+body {
+    background:#2e2e2e;
+}
 .main_plot{
-    height: 800px;
+    height: 795px;
     width: 100%;
+    margin: 4px;
 }
 
 .side_plot{
     height: 555px;
+    margin: 2px;
 }
+

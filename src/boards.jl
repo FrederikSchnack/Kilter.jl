@@ -58,7 +58,7 @@ function Kilterboard_original()
         end
     end
 
-    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys), image_links,frame_to_pos, leds_to_color(product_id))
+    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys), image_links,frame_to_pos, leds_to_color())
 end
 
 function Kilterboard_homewall()
@@ -89,5 +89,5 @@ function Kilterboard_homewall()
         end
     end
 
-    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys),image_links,frame_to_pos, leds_to_color(product_id))
+    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys),image_links,frame_to_pos, leds_to_color())
 end

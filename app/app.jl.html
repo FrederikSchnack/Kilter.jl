@@ -1,4 +1,4 @@
-<header class="st-header q-pa-sm">
+<header class="st-header q-pa-sm rounded-borders">
     <div class="row">
         <div class="col">
             <h1>Kilter.jl</h1>
@@ -12,9 +12,9 @@
     </div>
 </header>
 
-<div id="i2rgv" class="row gutter-xs">
+<div id="i2rgv" class="row justify-evenly">
 
-    <div class="col-xs-12 col-sm-12 col-md-6">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
         <h3 id="i9m5a">Board angle </h3>
         <q-range v-model="board_angle" :min="0" :max="70" :step="5" markers="" label="" label-always="" :left-label-value="board_angle.min" :right-label-value="board_angle.max" dark=""></q-range>
         <h3 id="i9m5a">Climb difficulty </h3>
@@ -23,11 +23,12 @@
         <plotly :data="side_plot_data" :layout="side_layout" class="side_plot sync_side_plot_data"></plotly>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-6 self-center">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 self-center">
         <plotly  :data="plot_data" :layout="layout" class="main_plot" > </plotly>
     </div>
 
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 self-center">
+        <q-table :columns="climbs.columns_climbs" :data="climbs.data_climbs" row-key="Name" :selection="&quot;single&quot;" :selected.sync="climbs_selection" :pagination="table_pagination" class="data_table">
+        </q-table>
+    </div>
 </div>
-
-    <q-table :columns="climbs.columns_climbs" :data="climbs.data_climbs" row-key="Name" :selection="&quot;single&quot;" :selected.sync="climbs_selection" class="data_table">
-    </q-table>

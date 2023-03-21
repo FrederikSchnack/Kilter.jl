@@ -48,7 +48,7 @@ end
 function Kdata_home()
 
     KB = Kilter.Kilterboard_homewall()
-
+    
     gh = "https://raw.githubusercontent.com/FrederikSchnack/Kilter.jl/main/"
     layout = PlotlyBase.Layout(
     xaxis = attr(visible=false, showgrid=false, range=(0,KB.sizes[1])),
