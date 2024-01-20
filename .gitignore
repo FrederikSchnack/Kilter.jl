@@ -1,2 +1,5 @@
 /Manifest.toml
 /app/Manifest.toml
+/data/*
+/app_old/*
+/app/log

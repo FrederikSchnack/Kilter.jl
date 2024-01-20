@@ -1,17 +1,6 @@
-#ifeiu{background-color:white;}
-#i9m5a{color:white;}
-#i2rgv{background-color:#2e2e2e;}
-body {
-    background:#2e2e2e;
-}
-.main_plot{
-    height: 795px;
-    width: 100%;
-    margin: 4px;
-}
-
-.side_plot{
-    height: 555px;
-    margin: 2px;
-}
-
+body{background:#2e2e2e;}
+#white{color:white;}
+#grey{color:#2e2e2e;}
+#grey-text{color:#2e2e2e;font-size:16px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
+#black{color:black;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
+body{background:#2e2e2e;}

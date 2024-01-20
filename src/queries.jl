@@ -1,42 +1,82 @@
-function placements_to_holes()
-    h = SQLite.DBInterface.execute(db.x, """SELECT id, hole_id FROM placements """)
-    dh = DataFrame(h)
+function placement_to(product_size_id::Int)
+    h = SQLite.DBInterface.execute(db.x, """SELECT leds.position, placements.id, holes.x, holes.y
+                                            FROM leds  
+                                            INNER JOIN placements
+                                            ON leds.hole_id = placements.hole_id
+                                            INNER JOIN holes
+                                            ON leds.hole_id = holes.id
+                                            WHERE leds.product_size_id=$product_size_id 
+                                            """)
+    dh = DataFrames.DataFrame(h)
 
-    placement_to_hold = Dict{Int, Int}()
+    pl_to_pos = Dict{Int, Int}()
+    pl_to_coo = Dict{Int, Tuple{Float64, Float64}}()
+    # pos_to_coo = Dict{Int, Tuple{Int, Int}}()
+
     for k in eachrow(dh)
-        placement_to_hold[k.id] = k.hole_id
+        pl_to_pos[k.id] = (k.position)
+        pl_to_coo[k.id] = (k.x, k.y)
+        # pos_to_coo[k.position] = (k.x, k.y)
     end
 
-    return placement_to_hold
+    return pl_to_pos, pl_to_coo
 end
 
-function holes_to_pos(product_size_id::Int)
-    h = SQLite.DBInterface.execute(db.x, """SELECT id, x, y FROM holes WHERE id IN (SELECT hole_id FROM leds WHERE product_size_id=$product_size_id )""")
-    dh = DataFrame(h)
+# function placement_to_coordinates()
+#     h = SQLite.DBInterface.execute(db.x, """SELECT x, y, placements.id 
+#                                             FROM holes  
+#                                             INNER JOIN placements
+#                                             ON holes.id = placements.hole_id 
+#                                             """)
+#     dh = DataFrames.DataFrame(h)
 
-    hole_to_pos = Dict{Int, Tuple{Int, Int}}()
-    for k in eachrow(dh)
-        hole_to_pos[k.id] = (k.x, k.y)
-    end
+#     pl_to_co = Dict{Int, Tuple{Int, Int}}()
+#     for k in eachrow(dh)
+#         pl_to_co[k.id] = (k.x, k.y)
+#     end
 
-    return hole_to_pos
-end
+#     return pl_to_co
+# end
 
-function leds_to_color(product_id::Int)
-    h = SQLite.DBInterface.execute(db.x, """SELECT id, screen_color FROM placement_roles WHERE product_id = $product_id""")
-    dh = DataFrame(h)
+# function placements_to_holes()
+#     h = SQLite.DBInterface.execute(db.x, """SELECT id, hole_id FROM placements """)
+#     dh = DataFrames.DataFrame(h)
 
-    led_to_color = Dict{Int, String}()
-    for k in eachrow(dh)
-        led_to_color[k.id] = k.screen_color
-    end
+#     placement_to_hold = Dict{Int, Int}()
+#     for k in eachrow(dh)
+#         placement_to_hold[k.id] = k.hole_id
+#     end
 
-    return led_to_color
-end
+#     return placement_to_hold
+# end
+
+# function holes_to_pos(product_size_id::Int)
+#     h = SQLite.DBInterface.execute(db.x, """SELECT id, x, y FROM holes WHERE id IN (SELECT hole_id FROM leds WHERE product_size_id=$product_size_id )""")
+#     dh = DataFrames.DataFrame(h)
+
+#     hole_to_pos = Dict{Int, Tuple{Int, Int}}()
+#     for k in eachrow(dh)
+#         hole_to_pos[k.id] = (k.x, k.y)
+#     end
+
+#     return hole_to_pos
+# end
+
+# function leds_to_color(product_id::Int)
+#     h = SQLite.DBInterface.execute(db.x, """SELECT id, screen_color FROM placement_roles WHERE product_id = $product_id""")
+#     dh = DataFrames.DataFrame(h)
+
+#     led_to_color = Dict{Int, String}()
+#     for k in eachrow(dh)
+#         led_to_color[k.id] = k.screen_color
+#     end
+
+#     return led_to_color
+# end
 
 function leds_to_color()
     h = SQLite.DBInterface.execute(db.x, """SELECT id, screen_color FROM placement_roles""")
-    dh = DataFrame(h)
+    dh = DataFrames.DataFrame(h)
 
     led_to_color = Dict{Int, String}()
     for k in eachrow(dh)
@@ -49,10 +89,10 @@ end
 
 function get_image_files(product_size_id::Int)
     l = SQLite.DBInterface.execute(db.x, """SELECT image_filename FROM product_sizes_layouts_sets WHERE product_size_id=$product_size_id""")
-    dl = DataFrame(l)
+    dl = DataFrames.DataFrame(l)
     
     ll = SQLite.DBInterface.execute(db.x, """SELECT image_filename FROM product_sizes WHERE id=$product_size_id""")
-    dll = DataFrame(ll) 
+    dll = DataFrames.DataFrame(ll) 
     
     return path_to_data.x .* vcat(dll.image_filename, dl.image_filename)
 end
@@ -64,45 +104,64 @@ function get_all_established_climbs(KB::Board)
     FROM climbs
     INNER JOIN climb_stats
     ON climbs.uuid = climb_stats.climb_uuid
-    WHERE is_listed = 1 and is_draft = 0 and frames_count = 1 and layout_id = $(KB.layout_id) and edge_bottom >= $(KB.edge_bottom_top[1]) and edge_top <= $(KB.edge_bottom_top[2]) and edge_left >= $(KB.edge_left_right[1]) and edge_right <= $(KB.edge_left_right[2])  and ascensionist_count >= 1 """
+    WHERE is_listed = 1 and is_draft = 0 and frames_count = 1 and layout_id = $(KB.layout_id) and edge_bottom >= $(KB.edge_bottom_top[1]) and edge_top <= $(KB.edge_bottom_top[2]) and edge_left >= $(KB.edge_left_right[1]) and edge_right <= $(KB.edge_left_right[2])  and ascensionist_count >= 1 and product_size_id=$(KB.product_size_id)"""
 
     d = SQLite.DBInterface.execute(db.x, restr)
 
-    return DataFrame(d)
+    return DataFrames.DataFrame(d)
 end
+
 
 function get_all_climbs(KB::Board)
     # * with some restrictions
    
-    restr = """ SELECT name, difficulty_average, climb_stats.angle, frames, setter_username, fa_username, ascensionist_count, quality_average
+    restr = """ SELECT name, uuid, difficulty_average, climb_stats.angle, frames, setter_username, fa_username, ascensionist_count, quality_average
     FROM climbs
     INNER JOIN climb_stats
     ON climbs.uuid = climb_stats.climb_uuid
-    WHERE is_listed = 1 and is_draft = 0 and frames_count = 1 and layout_id = $(KB.layout_id) and edge_bottom >= $(KB.edge_bottom_top[1]) and edge_top <= $(KB.edge_bottom_top[2]) and edge_left >= $(KB.edge_left_right[1]) and edge_right <= $(KB.edge_left_right[2]) """
+    INNER JOIN product_sizes_layouts_sets
+    ON climbs.layout_id = product_sizes_layouts_sets.layout_id 
+    WHERE climbs.is_listed = 1 and is_draft = 0 and frames_count = 1 and climbs.layout_id = $(KB.layout_id) and edge_bottom >= $(KB.edge_bottom_top[1]) and edge_top <= $(KB.edge_bottom_top[2]) and edge_left >= $(KB.edge_left_right[1]) and edge_right <= $(KB.edge_left_right[2]) and product_size_id=$(KB.product_size_id)"""
 
     d = SQLite.DBInterface.execute(db.x, restr)
 
-    return DataFrame(d)
+    return DataFrames.DataFrame(d)
 end
 
-# Some artifacts
-#h = SQLite.DBInterface.execute(db, """SELECT * FROM layouts""")
-# dh = DataFrame(h)
+function get_all_climbs()
+    # * with some restrictions
+   
+    restr = """ SELECT *
+    FROM climbs
+    INNER JOIN climb_stats
+    ON climbs.uuid = climb_stats.climb_uuid
+    INNER JOIN product_sizes_layouts_sets
+    ON climbs.layout_id = product_sizes_layouts_sets.layout_id 
+    WHERE climbs.is_listed = 1 and is_draft = 0 and frames_count = 1 """
+
+    d = SQLite.DBInterface.execute(db.x, restr)
+
+    return DataFrames.DataFrame(d)
+end
+
+# Some important artifacts
+# h = SQLite.DBInterface.execute(db, """SELECT * FROM layouts""")
+# dh = DataFrames.DataFrame(h)
 # 
 # h = SQLite.DBInterface.execute(db, """SELECT * FROM holes WHERE id IN (SELECT hole_id FROM leds WHERE product_size_id=10 )""")
-# dh = DataFrame(h)
+# dh = DataFrames.DataFrame(h)
 
 
-# l = SQLite.DBInterface.execute(db, """SELECT * FROM product_sizes_layouts_sets WHERE product_size_id=10""")
-# dl = DataFrame(l)
+# l = SQLite.DBInterface.execute(db, """SELECT * FROM product_sizes_layouts_sets WHERE product_size_id=28""")
+# dl = DataFrames.DataFrame(l)
 
 
 
 # c = SQLite.DBInterface.execute(db.x, """SELECT * FROM climbs WHERE climbs.setter_username ="JohannesFinnstein" """)
-# dc = DataFrame(c)
+# dc = DataFrames.DataFrame(c)
 
 # h = SQLite.DBInterface.execute(db, """SELECT * FROM placements WHERE layout_id=1 AND (set_id=1 OR set_id=20)""")
-# dh = DataFrame(h)
+# dh = DataFrames.DataFrame(h)
 
 
 # """db

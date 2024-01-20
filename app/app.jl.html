@@ -1,34 +1,67 @@
 <header class="st-header q-pa-sm rounded-borders">
-    <div class="row">
-        <div class="col">
-            <h1>Kilter.jl</h1>
-            <p>A interactive web dashboard for <a href="https://github.com/FrederikSchnack/Kilter.jl">Kilter.jl</a>.
-            </p>
+    <div class="row ">
+        <div class="column  col-md-3 items-start">
+            <img src="https://raw.githubusercontent.com/FrederikSchnack/Kilter.jl/ca5e3dc60e81338af25a6dfc300bdf03d370cfdb/app/public/css/image.svg"/>
         </div>
-        <div class="col"></div>
-        <div class="col"></div>
-        <q-toggle v-model="board" false-value="Homewall" true-value="Original" id="ifeiu"> Kilterboard {{board}} </q-toggle>
-        <div class="col"></div>
+        <div class="column col-md-6 items-start justify-center">
+            <p id="grey-text"> A interactive web dashboard for <a href="https://github.com/FrederikSchnack/Kilter.jl"> <q-icon size="32px" name = "img:https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" />Kilter.jl</a>. If the page is not responsive, give it a quick reload. </p>
+        </div>
+        <div class="column col-md-3 items-center justify-center">
+            <div class="row justify-end" >
+            <q-toggle id="grey-text" v-model="mode" false-value="heatmap" true-value="selection"> Hold {{mode}} </q-toggle>
+            <q-toggle id="grey-text" v-model="board" false-value="Homewall" true-value="Original"> Kilterboard {{board}} </q-toggle>
+        </div>
+    </div>
     </div>
 </header>
 
-<div id="i2rgv" class="row justify-evenly">
 
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
-        <h3 id="i9m5a">Board angle </h3>
+<div class="row items-start justify-evenly">
+    <div class="col-md-5 col-xs-12">
+        <div class="row">
+            <div class="col-md-3 col-sm-3">
+                <q-avatar size="100px"><img v-bind:src="avatar_img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3R5bGU9ImZpbGw6IHJnYmEoMCwwLDAsMC4xNSk7IHRyYW5zZm9ybTogc2NhbGUoMC43NSkiPgogICAgICAgIDxwYXRoIGQ9Ik04LjUgMTMuNWwyLjUgMyAzLjUtNC41IDQuNSA2SDVtMTYgMVY1YTIgMiAwIDAgMC0yLTJINWMtMS4xIDAtMiAuOS0yIDJ2MTRjMCAxLjEuOSAyIDIgMmgxNGMxLjEgMCAyLS45IDItMnoiPjwvcGF0aD4KICAgICAgPC9zdmc+" id="ite5j" /></q-avatar>
+            </div>
+            <div class="col-md-9 col-sm-8 ">
+                <p>
+                    <q-input v-model="username" debounce="750" label="Username" dark="">
+                    </q-input>
+                </p>
+                <p id="white">{{user_text}}</p>
+            </div>
+        </div>
+        <h3 id="white">Board angle </h3>
         <q-range v-model="board_angle" :min="0" :max="70" :step="5" markers="" label="" label-always="" :left-label-value="board_angle.min" :right-label-value="board_angle.max" dark=""></q-range>
-        <h3 id="i9m5a">Climb difficulty </h3>
-        <q-range v-model="grade" :min="10" :max="33" :step="1" markers="" label="" label-always="" :left-label-value="grade_label.min" :right-label-value="grade_label.max" dark=""></q-range>
-        <h3 id="i9m5a">Selection of holds </h3>
-        <plotly :data="side_plot_data" :layout="side_layout" class="side_plot sync_side_plot_data"></plotly>
+        <h3 id="white">Climb difficulty </h3>
+        <q-range v-model="grade" :min="10" :max="33" :step="1" markers="" label-always="" :left-label-value="grade_label.min" :right-label-value="grade_label.max" dark=""></q-range>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4 self-center">
-        <plotly  :data="plot_data" :layout="layout" class="main_plot" > </plotly>
+    <div class="col-md-6 col-xs-12">
+        <plotly :data="histo" :layout="histo_layout"></plotly>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 self-center">
-        <q-table :columns="climbs.columns_climbs" :data="climbs.data_climbs" row-key="Name" :selection="&quot;single&quot;" :selected.sync="climbs_selection" :pagination="table_pagination" class="data_table">
+</div>
+
+<div class="row">
+
+    <div class="col-12">
+        <q-table :columns="data.columns" :data="data.data" row-key="Name" :selection="&quot;single&quot;" :pagination="table_pagination" :selected.sync="climbs_selection" class="data_table">
         </q-table>
     </div>
+
+</div>
+
+<div class="row">
+
+    <div v-if="mode == 'heatmap'" class="col-md-6 col-xs-12">
+        <plotly :data="heatmap" :layout="plot_layout"> </plotly>
+    </div>
+    <div v-else="mode == 'selection'" class="col-md-6 col-xs-12">
+        <plotly  :data="hold_plot" :layout="plot_layout" class="main_plot sync_hold_plot_data"> </plotly>
+    </div>
+
+    <div class="col-md-6 col-xs-12">
+        <plotly :data="selection_plot" :layout="plot_layout" class="main_plot"> </plotly>
+    </div>
+
 </div>

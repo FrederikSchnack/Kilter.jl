@@ -1,22 +1,3 @@
-"""
-    Similar to 
-    SQLite.DBTable("walls", Tables.Schema:
-    :uuid                   Union{Missing, String}
-    :user_id                Missing
-    :name                   Union{Missing, String}
-    :product_id             Missing
-    :is_adjustable          Missing
-    :angle                  Missing
-    :layout_id              Missing
-    :product_size_id        Missing
-    :hsm                    Missing
-    :serial_number          Union{Missing, String}
-    :created_at             Union{Missing, String}
-    :rejection_reason_code  Missing)
-
-    But only store:
-"""
-
 struct Board
     name::String
     product_id::Int
@@ -26,7 +7,8 @@ struct Board
     edge_bottom_top::Tuple{Int, Int}
     sizes::Tuple{Int, Int}
     image_links::Vector{String}
-    frame_to_pos::Dict{Int, Tuple{Float64, Float64}}
+    frame_to_coordinate::Dict{Int, Tuple{Float64, Float64}}
+    frame_to_position::Dict{Int, Int}
     led_to_color::Dict{Int, String}
 end
 
@@ -45,20 +27,45 @@ function Kilterboard_original()
     ys, xs = size(background)
     xp = x2p - x1p
     scale = xs/xp
+    
+    # get placements to position and coordinates 
+    pl_to_pos, pl_to_coo = placement_to(product_size_id)
 
-    p_t_h = placements_to_holes()
-    h_t_po = holes_to_pos(product_size_id)
-
-    frame_to_pos = Dict{Int, Tuple{Float64, Float64}}()
-
-    for (k,v) in p_t_h
-        if v ∈ keys(h_t_po)
-            pos = h_t_po[v]
-            frame_to_pos[k] =  scale .* (pos[1] - x1p, y2p - pos[2])
-        end
+    # scale coordinates for plotting background
+    for v in keys(pl_to_coo)
+        x,y = pl_to_coo[v]
+        pl_to_coo[v] = scale .* (x - x1p, y2p - y)
     end
 
-    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys), image_links,frame_to_pos, leds_to_color())
+    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys), image_links, pl_to_coo, pl_to_pos, leds_to_color())
+end
+
+function Kilterboard_original_wide()
+    name = "Kilter Board Original: 16 x 12  Super Wide with kickboard"
+    product_id = 1
+    product_size_id = 28
+    layout_id = 1
+    x1p, x2p = (-24,168)
+    y1p, y2p = (0,156)
+    
+    image_links = get_image_files(product_size_id)
+
+    # Scaling positions
+    background = load(image_links[2])
+    ys, xs = size(background)
+    xp = x2p - x1p
+    scale = xs/xp
+
+    # get placements to position and coordinates 
+    pl_to_pos, pl_to_coo = placement_to(product_size_id)
+
+    # scale coordinates for plotting background
+    for v in keys(pl_to_coo)
+        x,y = pl_to_coo[v]
+        pl_to_coo[v] = scale .* (x - x1p, y2p - y)
+    end
+
+    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys), image_links, pl_to_coo, pl_to_pos, leds_to_color())
 end
 
 function Kilterboard_homewall()
@@ -77,17 +84,14 @@ function Kilterboard_homewall()
     xp = x2p - x1p
     scale = xs/xp
 
-    p_t_h = placements_to_holes()
-    h_t_po = holes_to_pos(product_size_id)
+    # get placements to position and coordinates 
+    pl_to_pos, pl_to_coo = placement_to(product_size_id)
 
-    frame_to_pos = Dict{Int, Tuple{Float64, Float64}}()
-
-    for (k,v) in p_t_h
-        if v ∈ keys(h_t_po)
-            pos = h_t_po[v]
-            frame_to_pos[k] =  scale .* (pos[1] - x1p, y2p - pos[2])
-        end
+    # scale coordinates for plotting background
+    for v in keys(pl_to_coo)
+        x,y = pl_to_coo[v]
+        pl_to_coo[v] = scale .* (x - x1p, y2p - y)
     end
 
-    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys),image_links,frame_to_pos, leds_to_color())
+    return Board(name, product_id, product_size_id, layout_id,  (x1p, x2p), (y1p, y2p), (xs, ys),image_links, pl_to_coo, pl_to_pos, leds_to_color())
 end

@@ -1,8 +1,7 @@
 module Kilter
 
-    using SQLite, Tables, DataFrames
-    #using Plots, Images
-    using Images, PlotlyJS
+    using SQLite, DataFrames, JSON, HTTP
+    using Images, PlotlyJS, PlotlyJS.WebIO
 
     function __init__()
         if basename(pwd()) == "Kilter.jl"
@@ -10,7 +9,7 @@ module Kilter
         elseif basename(pwd()) == "app"
             path_to_data[] = "../data/"
         else
-            error("Path not correct!")
+            error("Path not correct! Current:" * basename(pwd()))
         end
 
         db[] = SQLite.DB(path_to_data.x*"db.sqlite3")
@@ -18,7 +17,6 @@ module Kilter
 
     const path_to_data = Ref{String}()
     const db = Ref{SQLite.DB}()
-
     
     const grades = Dict{Int, String}(
         10 => "4a/V0",
@@ -53,6 +51,8 @@ module Kilter
     include("visualize.jl")
     include("analysis.jl")
     include("examples.jl")
-
+    include("packets.jl")
+    include("api.jl")
+    
     export plot_random_climb, plot_heatmap
 end
