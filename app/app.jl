@@ -306,6 +306,6 @@ module App
 
     end
 
-    @page("/", "app.jl.html")
+    @page("/", "app.jl.html", layout = Stipple.ReactiveTools.DEFAULT_LAYOUT(title="kilterdashboard"))
 
 end

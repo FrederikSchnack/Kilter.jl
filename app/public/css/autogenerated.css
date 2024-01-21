@@ -3,4 +3,13 @@ body{background:#2e2e2e;}
 #grey{color:#2e2e2e;}
 #grey-text{color:#2e2e2e;font-size:16px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
 #black{color:black;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;}
-body{background:#2e2e2e;}
+
+._genie{ display: none; } 
+
+.left_plot{
+    margin-bottom: 1.2em;
+}
+
+.right_plot{
+    margin-bottom: 1.2em;
+}

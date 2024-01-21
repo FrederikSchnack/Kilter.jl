@@ -1,12 +1,16 @@
+<head>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.png">
+</head>
+
 <header class="st-header q-pa-sm rounded-borders">
     <div class="row ">
-        <div class="column  col-md-3 items-start">
-            <img src="https://raw.githubusercontent.com/FrederikSchnack/Kilter.jl/ca5e3dc60e81338af25a6dfc300bdf03d370cfdb/app/public/css/image.svg"/>
+        <div class="column  col-md-3  items-start">
+            <img src="https://raw.githubusercontent.com/FrederikSchnack/Kilter.jl/cb5fdc3258b8341b865cee91254a0f6db9adc450/app/public/img/logo_grey.svg"/>
         </div>
-        <div class="column col-md-6 items-start justify-center">
-            <p id="grey-text"> A interactive web dashboard for <a href="https://github.com/FrederikSchnack/Kilter.jl"> <q-icon size="32px" name = "img:https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" />Kilter.jl</a>. If the page is not responsive, give it a quick reload. </p>
+        <div class="column col-md-4 items-start justify-end">
+            <p id="grey-text"> A interactive web dashboard for <a href="https://github.com/FrederikSchnack/Kilter.jl"> <q-icon size="32px" name = "img:https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png" />Kilter.jl</a>. </p>
         </div>
-        <div class="column col-md-3 items-center justify-center">
+        <div class="column col-md-5 col-xs-12 items-center justify-center">
             <div class="row justify-end" >
             <q-toggle id="grey-text" v-model="mode" false-value="heatmap" true-value="selection"> Hold {{mode}} </q-toggle>
             <q-toggle id="grey-text" v-model="board" false-value="Homewall" true-value="Original"> Kilterboard {{board}} </q-toggle>
@@ -51,17 +55,17 @@
 
 </div>
 
-<div class="row">
+<div class="row items-start">
 
     <div v-if="mode == 'heatmap'" class="col-md-6 col-xs-12">
-        <plotly :data="heatmap" :layout="plot_layout"> </plotly>
+        <plotly :data="heatmap" :layout="plot_layout" class="left_plot"> </plotly>
     </div>
     <div v-else="mode == 'selection'" class="col-md-6 col-xs-12">
-        <plotly  :data="hold_plot" :layout="plot_layout" class="main_plot sync_hold_plot_data"> </plotly>
+        <plotly  :data="hold_plot" :layout="plot_layout" class="left_plot sync_hold_plot_data"> </plotly>
     </div>
 
     <div class="col-md-6 col-xs-12">
-        <plotly :data="selection_plot" :layout="plot_layout" class="main_plot"> </plotly>
+        <plotly :data="selection_plot" :layout="plot_layout" class="right_plot"> </plotly>
     </div>
 
 </div>
